@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="ru">
+
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!--<link rel="stylesheet" href="./css/style.css" />-->
+	<link rel="stylesheet" href="./css/style.css" />
+	<title>Document</title>
+</head>
+
+<body>
+	<canvas id="c"></canvas>
+
+
+	<script type="module">
+		import * as THREE from 'https://threejsfundamentals.org/threejs/resources/threejs/r127/build/three.module.js';
+
+		function main() {
+			const canvas = document.querySelector('#c');
+			const renderer = new THREE.WebGLRenderer({ canvas });
+
+			const fov = 75;
+			const aspect = 2;  // the canvas default
+			const near = 0.1;
+			const far = 100;
+			const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+			camera.position.set(-5, 9, 15);
+
+			const scene = new THREE.Scene();
+			scene.background = new THREE.Color('black');
+
+
+			/*==================================*/
+			//const canvas = document.querySelector('#c');
+			//const renderer = new THREE.WebGLRenderer({ canvas });
+
+			//const fov = 75;
+			//const aspect = 2;  // значение для canvas по умолчанию
+			//const near = 0.1;
+			//const far = 5;
+			//const camera = new THREE.PerspectiveCamera(fov, aspect, near, far);
+
+			//camera.position.z = 2;
+
+			//const scene = new THREE.Scene();
+
+			/*{
+				const color = 0xFFFFFF;
+				const intensity = 1;
+				const light = new THREE.DirectionalLight(color, intensity);
+				light.position.set(-1, 2, 4);
+				scene.add(light);
+			}*/
+			/*=================================*/
+			//Геометрия СФЕРЫ
+			/*const radius = 1;
+			const widthSegments = 25;
+			const heightSegments = 25;
+			const geometry = new THREE.SphereGeometry(radius, widthSegments, heightSegments);
+
+			//ТЕКСТУРЫ
+			const loader = new THREE.TextureLoader();
+			const material = new THREE.MeshBasicMaterial({
+				map: loader.load('./img/earth2.jpg'),
+			});
+
+			//const material = new THREE.MeshPhongMaterial({ color: 0x44aa88 });  // greenish blue // дает фигуре зеленный цвет
+
+			const cube = new THREE.Mesh(geometry, material);
+			scene.add(cube);
+			renderer.render(scene, camera);*/
+
+			const sphereRadius = 7;
+			const sphereWidthDivisions = 32;
+			const sphereHeightDivisions = 32;
+			const sphereGeo = new THREE.SphereGeometry(sphereRadius, sphereWidthDivisions, sphereHeightDivisions);
+			const loader = new THREE.TextureLoader();
+			const sphereMat = new THREE.MeshPhongMaterial({ map: loader.load('./img/earth2.jpg'), });
+			const mesh = new THREE.Mesh(sphereGeo, sphereMat);
+			mesh.position.set(-sphereRadius - 1, sphereRadius + 2, 0);
+			scene.add(mesh);
+
+			/*ДЛЯ СВЕТА*/
+			{
+				const color = 0xFFFFFF;
+				const intensity = 1;
+				const light = new THREE.DirectionalLight(color, intensity);
+				light.position.set(0, 0, 2);
+				light.target.position.set(-5, 0, 0);
+				scene.add(light);
+				scene.add(light.target);
+			}
+			/*========*/
+			function resizeRendererToDisplaySize(renderer) {
+				const canvas = renderer.domElement;
+				const width = canvas.clientWidth;
+				const height = canvas.clientHeight;
+				const needResize = canvas.width !== width || canvas.height !== height;
+				if (needResize) {
+					renderer.setSize(width, height, false);
+				}
+				return needResize;
+			}
+
+			function render(time) {
+				time *= 0.001;  // конвертировать время в секунды
+				if (resizeRendererToDisplaySize(renderer)) {
+					const canvas = renderer.domElement;
+					camera.aspect = canvas.clientWidth / canvas.clientHeight;
+					camera.updateProjectionMatrix();
+				}
+				/**/
+				/*const canvas = renderer.domElement;
+				camera.aspect = canvas.clientWidth / canvas.clientHeight;
+				camera.updateProjectionMatrix();
+
+
+				cube.rotation.y = time;
+				/**/
+				mesh.rotation.y = time / 5;
+				renderer.render(scene, camera);
+
+				requestAnimationFrame(render);
+			}
+
+			requestAnimationFrame(render);
+		}
+
+		main();
+	</script>
+</body>
+
+</html>
